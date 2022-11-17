@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 from urllib import request
 from bs4 import BeautifulSoup as bs
 from plotly import graph_objects as go
