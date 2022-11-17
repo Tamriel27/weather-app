@@ -10,13 +10,13 @@ st.title('5-Day Weather Forecast ⛅')
 @st.cache
 def get_data():
     url = 'http://www.tsag-agaar.gov.mn/export'
-    response = request.urlretrieve(url, '/work/data/tsag_agaar.xls')
+    response = request.urlretrieve(url, 'tsag_agaar.xls')
     return response
 
 def convert_to_xlsx():
-        with open('/work/data/tsag_agaar.xls', encoding='utf-8') as xml_file:
+        with open('tsag_agaar.xls', encoding='utf-8') as xml_file:
             soup = bs(xml_file.read(), 'xml')
-            writer = pd.ExcelWriter('/work/data/tsag_agaar.xlsx')
+            writer = pd.ExcelWriter('tsag_agaar.xlsx')
             for sheet in soup.findAll('Worksheet'):
                 sheet_as_list = []
                 for row in sheet.findAll('Row'):
@@ -28,7 +28,7 @@ def convert_to_xlsx():
             
 convert_to_xlsx()
 
-df = pd.read_excel('/work/data/tsag_agaar.xlsx', skiprows=1)
+df = pd.read_excel('tsag_agaar.xlsx', skiprows=1)
 df['Огноо'] = pd.to_datetime(df['Огноо']).dt.date
 
 city = st.selectbox('Select City ', df['Хотын нэр'].unique())
