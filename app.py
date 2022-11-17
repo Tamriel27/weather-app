@@ -33,7 +33,14 @@ df['Огноо'] = pd.to_datetime(df['Огноо']).dt.date
 
 city = st.selectbox('Select City ', df['Хотын нэр'].unique())
 selected = df.loc[df['Хотын нэр'] == city].drop('Хотын нэр', axis=1).reset_index(drop=True)
-
+selected['Өдрийн салхи'] = selected['Өдрийн салхи'].str.replace('м/с', '').astype(np.int64)
+selected['Шөнийн салхи'] = selected['Шөнийн салхи'].str.replace('м/с', '').astype(np.int64)
+selected = selected.rename(columns={'Өдрийн салхи' : 'Өдрийн салхи (м/с)', 
+                                    'Шөнийн салхи' : 'Шөнийн салхи (м/с)'})
+selected['delta_wind_day'] = selected['Өдрийн салхи (м/с)'].diff()
+selected['delta_wind_night'] = selected['Шөнийн салхи (м/с)'].diff()
+selected['delta_temp_day'] = selected['Өдрийн температур'].diff()
+selected['delta_temp_night'] = selected['Шөнийн температур'].diff()
 col1, col2, col3, col4, col5= st.columns(5)
 cloudy = ('https://cdn-icons-png.flaticon.com/512/414/414927.png')
 partly_cloudy = ('https://cdn-icons-png.flaticon.com/512/3208/3208676.png')
@@ -55,10 +62,10 @@ elif 'Ялимгүй цас' in selected['Өдрийн үзэгдэл'].iloc[0]:
     col1.image(partly_snowy)
 elif 'Ялимгүй хур тунадас' in selected['Өдрийн үзэгдэл'].iloc[0]:
     col1.image(partly_precipitation)
-col1.metric(label='Өдрийн температур', value=selected['Өдрийн температур'].iloc[0])
-col1.metric(label='Шөнийн температур', value=selected['Шөнийн температур'].iloc[0])
-col1.metric(label='Өдрийн салхи', value=selected['Өдрийн салхи'].iloc[0])
-col1.metric(label='Шөнийн салхи', value=selected['Шөнийн салхи'].iloc[0])
+col1.metric(label='Өдрийн температур', value='{} °C'.format(selected['Өдрийн температур'].iloc[0]), delta='{} °C'.format(selected['delta_temp_day'].iloc[0]))
+col1.metric(label='Шөнийн температур', value='{} °C'.format(selected['Шөнийн температур'].iloc[0]), delta='{} °C'.format(selected['delta_temp_night'].iloc[0]))
+col1.metric(label='Өдрийн салхи (м/с)', value='{} м/с'.format(selected['Өдрийн салхи (м/с)'].iloc[0]), delta='{} м/с'.format(selected['delta_wind_day'].iloc[0]))
+col1.metric(label='Шөнийн салхи (м/с)', value='{} м/с'.format(selected['Шөнийн салхи (м/с)'].iloc[0]), delta='{} м/с'.format(selected['delta_wind_night'].iloc[0]))
 col2.text(selected['Огноо'].iloc[1])
 col2.write(selected['Өдрийн үзэгдэл'].iloc[1])
 if 'Үүлшинэ' in selected['Өдрийн үзэгдэл'].iloc[1]:
@@ -73,10 +80,10 @@ elif 'Ялимгүй цас' in selected['Өдрийн үзэгдэл'].iloc[1]:
     col2.image(partly_snowy)
 elif 'Ялимгүй хур тунадас' in selected['Өдрийн үзэгдэл'].iloc[1]:
     col2.image(partly_precipitation)
-col2.metric(label='Өдрийн температур', value=selected['Өдрийн температур'].iloc[1])
-col2.metric(label='Шөнийн температур', value=selected['Шөнийн температур'].iloc[1])
-col2.metric(label='Өдрийн салхи', value=selected['Өдрийн салхи'].iloc[1])
-col2.metric(label='Шөнийн салхи', value=selected['Шөнийн салхи'].iloc[1])
+col2.metric(label='Өдрийн температур', value='{} °C'.format(selected['Өдрийн температур'].iloc[1]), delta='{} °C'.format(selected['delta_temp_day'].iloc[1]))
+col2.metric(label='Шөнийн температур', value='{} °C'.format(selected['Шөнийн температур'].iloc[1]), delta='{} °C'.format(selected['delta_temp_night'].iloc[1]))
+col2.metric(label='Өдрийн салхи (м/с)', value='{} м/с'.format(selected['Өдрийн салхи (м/с)'].iloc[1]), delta='{} м/с'.format(selected['delta_wind_day'].iloc[1]))
+col2.metric(label='Шөнийн салхи (м/с)', value='{} м/с'.format(selected['Шөнийн салхи (м/с)'].iloc[1]), delta='{} м/с'.format(selected['delta_wind_night'].iloc[1]))
 col3.text(selected['Огноо'].iloc[2])
 col3.write(selected['Өдрийн үзэгдэл'].iloc[2])
 if 'Үүлшинэ' in selected['Өдрийн үзэгдэл'].iloc[2]:
@@ -91,10 +98,10 @@ elif 'Ялимгүй цас' in selected['Өдрийн үзэгдэл'].iloc[2]:
     col3.image(partly_snowy)
 elif 'Ялимгүй хур тунадас' in selected['Өдрийн үзэгдэл'].iloc[2]:
     col3.image(partly_precipitation)
-col3.metric(label='Өдрийн температур', value=selected['Өдрийн температур'].iloc[2])
-col3.metric(label='Шөнийн температур', value=selected['Шөнийн температур'].iloc[2])
-col3.metric(label='Өдрийн салхи', value=selected['Өдрийн салхи'].iloc[2])
-col3.metric(label='Шөнийн салхи', value=selected['Шөнийн салхи'].iloc[2])
+col3.metric(label='Өдрийн температур', value='{} °C'.format(selected['Өдрийн температур'].iloc[2]), delta='{} °C'.format(selected['delta_temp_day'].iloc[2]))
+col3.metric(label='Шөнийн температур', value='{} °C'.format(selected['Шөнийн температур'].iloc[2]), delta='{} °C'.format(selected['delta_temp_night'].iloc[2]))
+col3.metric(label='Өдрийн салхи (м/с)', value='{} м/с'.format(selected['Өдрийн салхи (м/с)'].iloc[2]), delta='{} м/с'.format(selected['delta_wind_day'].iloc[2]))
+col3.metric(label='Шөнийн салхи (м/с)', value='{} м/с'.format(selected['Шөнийн салхи (м/с)'].iloc[2]), delta='{} м/с'.format(selected['delta_wind_night'].iloc[2]))
 col4.text(selected['Огноо'].iloc[3])
 col4.write(selected['Өдрийн үзэгдэл'].iloc[3])
 if 'Үүлшинэ' in selected['Өдрийн үзэгдэл'].iloc[3]:
@@ -109,10 +116,10 @@ elif 'Ялимгүй цас' in selected['Өдрийн үзэгдэл'].iloc[3]:
     col4.image(partly_snowy)
 elif 'Ялимгүй хур тунадас' in selected['Өдрийн үзэгдэл'].iloc[3]:
     col4.image(partly_precipitation)
-col4.metric(label='Өдрийн температур', value=selected['Өдрийн температур'].iloc[3])
-col4.metric(label='Шөнийн температур', value=selected['Шөнийн температур'].iloc[3])
-col4.metric(label='Өдрийн салхи', value=selected['Өдрийн салхи'].iloc[3])
-col4.metric(label='Шөнийн салхи', value=selected['Шөнийн салхи'].iloc[3])
+col4.metric(label='Өдрийн температур', value='{} °C'.format(selected['Өдрийн температур'].iloc[3]), delta='{} °C'.format(selected['delta_temp_day'].iloc[3]))
+col4.metric(label='Шөнийн температур', value='{} °C'.format(selected['Шөнийн температур'].iloc[3]), delta='{} °C'.format(selected['delta_temp_night'].iloc[3]))
+col4.metric(label='Өдрийн салхи (м/с)', value='{} м/с'.format(selected['Өдрийн салхи (м/с)'].iloc[3]), delta='{} м/с'.format(selected['delta_wind_day'].iloc[3]))
+col4.metric(label='Шөнийн салхи (м/с)', value='{} м/с'.format(selected['Шөнийн салхи (м/с)'].iloc[3]), delta='{} м/с'.format(selected['delta_wind_night'].iloc[3]))
 col5.text(selected['Огноо'].iloc[4])
 col5.write(selected['Өдрийн үзэгдэл'].iloc[4])
 if 'Үүлшинэ' in selected['Өдрийн үзэгдэл'].iloc[4]:
@@ -127,12 +134,13 @@ elif 'Ялимгүй цас' in selected['Өдрийн үзэгдэл'].iloc[4]:
     col5.image(partly_snowy)
 elif 'Ялимгүй хур тунадас' in selected['Өдрийн үзэгдэл'].iloc[4]:
     col5.image(partly_precipitation)
-col5.metric(label='Өдрийн температур', value=selected['Өдрийн температур'].iloc[4])
-col5.metric(label='Шөнийн температур', value=selected['Шөнийн температур'].iloc[4])
-col5.metric(label='Өдрийн салхи', value=selected['Өдрийн салхи'].iloc[4])
-col5.metric(label='Шөнийн салхи', value=selected['Шөнийн салхи'].iloc[4])
+col5.metric(label='Өдрийн температур', value='{} °C'.format(selected['Өдрийн температур'].iloc[4]), delta='{} °C'.format(selected['delta_temp_day'].iloc[4]))
+col5.metric(label='Шөнийн температур', value='{} °C'.format(selected['Шөнийн температур'].iloc[4]), delta='{} °C'.format(selected['delta_temp_night'].iloc[4]))
+col5.metric(label='Өдрийн салхи (м/с)', value='{} м/с'.format(selected['Өдрийн салхи (м/с)'].iloc[4]), delta='{} м/с'.format(selected['delta_wind_day'].iloc[4]))
+col5.metric(label='Шөнийн салхи (м/с)', value='{} м/с'.format(selected['Шөнийн салхи (м/с)'].iloc[4]), delta='{} м/с'.format(selected['delta_wind_night'].iloc[4]))
 
-st.dataframe(selected)
+st.dataframe(selected[['Огноо', 'Өдрийн температур', 'Өдрийн салхи (м/с)', 'Өдрийн үзэгдэл', 
+                       'Шөнийн температур', 'Шөнийн салхи (м/с)', 'Шөнийн үзэгдэл']])
 def bargraph():
     fig=go.Figure(data=
         [
